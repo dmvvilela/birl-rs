@@ -1,0 +1,40 @@
+[package]
+name = "sandwich-cli"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "sandwich-cli"
+path = "src/main.rs"
+
+[dependencies]
+# Core crates
+sandwich-core = { path = "../sandwich-core" }
+sandwich-storage = { path = "../sandwich-storage" }
+
+# CLI
+clap.workspace = true
+
+# Async
+tokio.workspace = true
+rayon.workspace = true
+
+# AWS
+aws-sdk-s3.workspace = true
+aws-config.workspace = true
+
+# Serialization
+serde.workspace = true
+serde_json.workspace = true
+
+# Error Handling
+anyhow.workspace = true
+
+# Logging
+tracing.workspace = true
+tracing-subscriber.workspace = true
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["test-util"] }
