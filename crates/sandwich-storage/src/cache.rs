@@ -1,4 +1,4 @@
-use crate::s3::S3Storage;
+use crate::StorageBackend;
 use anyhow::Result;
 use bytes::Bytes;
 use lru::LruCache;
@@ -7,27 +7,27 @@ use std::sync::Arc;
 use tokio::sync::Mutex;
 use tracing::{debug, info};
 
-/// Multi-tier image cache (LRU in-memory + S3)
+/// Multi-tier image cache (LRU in-memory + persistent storage)
 pub struct ImageCache {
     /// In-memory LRU cache
     memory: Arc<Mutex<LruCache<String, Arc<Bytes>>>>,
-    /// S3 storage backend
-    s3: Arc<S3Storage>,
+    /// Storage backend (S3 or local filesystem)
+    backend: Arc<dyn StorageBackend>,
 }
 
 impl ImageCache {
     /// Create a new image cache
-    pub fn new(s3: Arc<S3Storage>, capacity: usize) -> Self {
+    pub fn new(backend: Arc<dyn StorageBackend>, capacity: usize) -> Self {
         let capacity = NonZeroUsize::new(capacity).unwrap_or(NonZeroUsize::new(1000).unwrap());
 
         Self {
             memory: Arc::new(Mutex::new(LruCache::new(capacity))),
-            s3,
+            backend,
         }
     }
 
     /// Get a cached composite image
-    /// First checks memory cache, then S3 cache
+    /// First checks memory cache, then backend cache
     pub async fn get(&self, cache_key: &str) -> Result<Option<Bytes>> {
         // Check memory cache first
         {
@@ -38,9 +38,9 @@ impl ImageCache {
             }
         }
 
-        // Check S3 cache
-        if let Some(data) = self.s3.fetch_cached(cache_key).await? {
-            debug!("S3 cache hit: {}", cache_key);
+        // Check backend cache
+        if let Some(data) = self.backend.fetch_cached(cache_key).await? {
+            debug!("Backend cache hit: {}", cache_key);
 
             // Store in memory cache for future requests
             let arc_data = Arc::new(data.clone());
@@ -55,10 +55,10 @@ impl ImageCache {
     }
 
     /// Save a composite image to cache
-    /// Saves to both memory and S3
+    /// Saves to both memory and backend
     pub async fn put(&self, cache_key: &str, data: Bytes) -> Result<()> {
-        // Save to S3
-        self.s3.save_to_cache(cache_key, &data).await?;
+        // Save to backend
+        self.backend.save_to_cache(cache_key, &data).await?;
 
         // Save to memory cache
         let arc_data = Arc::new(data);

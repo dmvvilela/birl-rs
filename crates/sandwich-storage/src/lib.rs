@@ -4,6 +4,7 @@
 //! caching composites, and managing a multi-tier cache (memory + S3).
 
 pub mod cache;
+pub mod local;
 pub mod s3;
 
 use anyhow::{Context, Result};
@@ -11,32 +12,114 @@ use aws_sdk_s3::Client;
 use bytes::Bytes;
 use futures::future::try_join_all;
 use sandwich_core::{LayerParam, View};
+use std::path::PathBuf;
 use std::sync::Arc;
 use tracing::{debug, warn};
 
 pub use cache::{CacheStats, ImageCache};
+pub use local::LocalStorage;
 pub use s3::S3Storage;
 
-/// High-level storage service that combines S3 and caching
+/// Storage backend trait
+#[async_trait::async_trait]
+pub trait StorageBackend: Send + Sync {
+    async fn fetch_layer(
+        &self,
+        category: &str,
+        sku: &str,
+        view: View,
+        extension: &str,
+    ) -> Result<Option<Bytes>>;
+
+    async fn fetch_cached(&self, cache_key: &str) -> Result<Option<Bytes>>;
+    async fn save_to_cache(&self, cache_key: &str, data: &[u8]) -> Result<()>;
+    async fn fetch_cached_json(&self, key: &str) -> Result<Option<String>>;
+}
+
+#[async_trait::async_trait]
+impl StorageBackend for S3Storage {
+    async fn fetch_layer(
+        &self,
+        category: &str,
+        sku: &str,
+        view: View,
+        extension: &str,
+    ) -> Result<Option<Bytes>> {
+        S3Storage::fetch_layer(self, category, sku, view, extension).await
+    }
+
+    async fn fetch_cached(&self, cache_key: &str) -> Result<Option<Bytes>> {
+        S3Storage::fetch_cached(self, cache_key).await
+    }
+
+    async fn save_to_cache(&self, cache_key: &str, data: &[u8]) -> Result<()> {
+        S3Storage::save_to_cache(self, cache_key, data).await
+    }
+
+    async fn fetch_cached_json(&self, key: &str) -> Result<Option<String>> {
+        S3Storage::fetch_cached_json(self, key).await
+    }
+}
+
+#[async_trait::async_trait]
+impl StorageBackend for LocalStorage {
+    async fn fetch_layer(
+        &self,
+        category: &str,
+        sku: &str,
+        view: View,
+        extension: &str,
+    ) -> Result<Option<Bytes>> {
+        LocalStorage::fetch_layer(self, category, sku, view, extension).await
+    }
+
+    async fn fetch_cached(&self, cache_key: &str) -> Result<Option<Bytes>> {
+        LocalStorage::fetch_cached(self, cache_key).await
+    }
+
+    async fn save_to_cache(&self, cache_key: &str, data: &[u8]) -> Result<()> {
+        LocalStorage::save_to_cache(self, cache_key, data).await
+    }
+
+    async fn fetch_cached_json(&self, key: &str) -> Result<Option<String>> {
+        LocalStorage::fetch_cached_json(self, key).await
+    }
+}
+
+/// High-level storage service that combines storage backend and caching
 pub struct StorageService {
-    s3: Arc<S3Storage>,
+    backend: Arc<dyn StorageBackend>,
     cache: Arc<ImageCache>,
 }
 
 impl StorageService {
-    /// Create a new storage service
-    pub fn new(s3_client: Client, bucket: String, cache_capacity: usize) -> Self {
-        let s3 = Arc::new(S3Storage::new(s3_client, bucket));
-        let cache = Arc::new(ImageCache::new(s3.clone(), cache_capacity));
+    /// Create a new storage service with S3 backend
+    pub fn new_s3(s3_client: Client, bucket: String, cache_capacity: usize) -> Self {
+        let backend = Arc::new(S3Storage::new(s3_client, bucket));
+        let cache = Arc::new(ImageCache::new(backend.clone(), cache_capacity));
 
-        Self { s3, cache }
+        Self { backend, cache }
+    }
+
+    /// Create a new storage service with local filesystem backend
+    pub fn new_local(base_path: PathBuf, cache_capacity: usize) -> Self {
+        let backend = Arc::new(LocalStorage::new(base_path));
+        let cache = Arc::new(ImageCache::new(backend.clone(), cache_capacity));
+
+        Self { backend, cache }
+    }
+
+    /// Legacy constructor for backward compatibility
+    #[deprecated(note = "Use new_s3() instead")]
+    pub fn new(s3_client: Client, bucket: String, cache_capacity: usize) -> Self {
+        Self::new_s3(s3_client, bucket, cache_capacity)
     }
 
     /// Fetch the base plate image
     pub async fn fetch_base_plate(&self, view: View) -> Result<Bytes> {
         let plate_value = view.plate_value();
 
-        self.s3
+        self.backend
             .fetch_layer("plate", plate_value, view, "jpg")
             .await?
             .context("Base plate not found")
@@ -49,11 +132,11 @@ impl StorageService {
         view: View,
     ) -> Result<Vec<Option<Bytes>>> {
         let futures = params.iter().map(|param| {
-            let s3 = self.s3.clone();
+            let backend = self.backend.clone();
             let category = param.category.clone();
             let sku = param.sku.as_str().to_string();
 
-            async move { s3.fetch_layer(&category, &sku, view, "png").await }
+            async move { backend.fetch_layer(&category, &sku, view, "png").await }
         });
 
         try_join_all(futures).await
@@ -71,7 +154,7 @@ impl StorageService {
 
     /// Fetch cached JSON data (e.g., product list)
     pub async fn fetch_cached_json(&self, key: &str) -> Result<Option<String>> {
-        self.s3.fetch_cached_json(key).await
+        self.backend.fetch_cached_json(key).await
     }
 
     /// Get cache statistics

@@ -4,6 +4,7 @@ use anyhow::Result;
 use clap::{Parser, Subcommand};
 use sandwich_core::View;
 use sandwich_storage::StorageService;
+use std::path::PathBuf;
 use std::sync::Arc;
 use tracing::Level;
 use tracing_subscriber::FmtSubscriber;
@@ -18,6 +19,10 @@ struct Cli {
     /// Enable verbose logging
     #[arg(short, long, global = true)]
     verbose: bool,
+
+    /// Use local filesystem instead of S3 (path to directory containing sandwich/)
+    #[arg(short, long, global = true)]
+    local: Option<PathBuf>,
 }
 
 #[derive(Subcommand)]
@@ -68,19 +73,26 @@ async fn main() -> Result<()> {
         .finish();
     tracing::subscriber::set_global_default(subscriber)?;
 
-    // Load AWS configuration
-    let aws_config = aws_config::load_defaults(aws_config::BehaviorVersion::latest()).await;
-    let s3_client = aws_sdk_s3::Client::new(&aws_config);
+    // Create storage service (local or S3 based on --local flag)
+    let storage = if let Some(local_path) = &cli.local {
+        println!("Using local filesystem storage: {}", local_path.display());
+        Arc::new(StorageService::new_local(local_path.clone(), 1000))
+    } else {
+        // Load AWS configuration
+        let aws_config = aws_config::load_defaults(aws_config::BehaviorVersion::latest()).await;
+        let s3_client = aws_sdk_s3::Client::new(&aws_config);
 
-    // Get bucket name from environment
-    let bucket_name = std::env::var("AWS_BUCKET_NAME")
-        .unwrap_or_else(|_| {
-            eprintln!("Warning: AWS_BUCKET_NAME not set, using default");
-            "sandwich-bucket".to_string()
-        });
+        // Get bucket name from environment
+        let bucket_name = std::env::var("AWS_BUCKET_NAME")
+            .unwrap_or_else(|_| {
+                eprintln!("Warning: AWS_BUCKET_NAME not set, using default");
+                "sandwich-bucket".to_string()
+            });
 
-    // Create storage service
-    let storage = Arc::new(StorageService::new(s3_client, bucket_name, 1000));
+        println!("Using S3 storage: {}", bucket_name);
+        #[allow(deprecated)]
+        Arc::new(StorageService::new(s3_client, bucket_name, 1000))
+    };
 
     // Execute command
     match cli.command {
