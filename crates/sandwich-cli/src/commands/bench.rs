@@ -63,8 +63,10 @@ async fn bench_composition(
     iterations: usize,
 ) -> Result<Vec<Duration>> {
     let mut times = Vec::new();
+    let mut fetch_times = Vec::new();
+    let mut compose_times = Vec::new();
 
-    for _ in 0..iterations {
+    for i in 0..iterations {
         let start = Instant::now();
 
         // Parse and normalize
@@ -73,14 +75,25 @@ async fn bench_composition(
         let normalized_params = normalizer.normalize_all(&params);
 
         // Fetch base plate and layers
+        let fetch_start = Instant::now();
         let base_image_data = storage.fetch_base_plate(view).await?;
         let layers_result = storage.fetch_layers(&normalized_params, view).await?;
         let layers: Vec<_> = layers_result.into_iter().flatten().collect();
+        fetch_times.push(fetch_start.elapsed());
 
         // Compose
+        let compose_start = Instant::now();
         let _composite_data = compose_layers(&base_image_data, layers)?;
+        compose_times.push(compose_start.elapsed());
 
         times.push(start.elapsed());
+    }
+
+    if iterations > 0 {
+        let avg_fetch: Duration = fetch_times.iter().sum::<Duration>() / iterations as u32;
+        let avg_compose: Duration = compose_times.iter().sum::<Duration>() / iterations as u32;
+        println!("  → Avg I/O time: {:?}", avg_fetch);
+        println!("  → Avg composition time: {:?}", avg_compose);
     }
 
     Ok(times)
