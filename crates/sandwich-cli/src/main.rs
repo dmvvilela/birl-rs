@@ -55,6 +55,13 @@ enum Commands {
 
     /// Show cache statistics
     Stats,
+
+    /// Run performance benchmarks
+    Bench {
+        /// Output file for results (markdown format)
+        #[arg(short, long)]
+        output: Option<String>,
+    },
 }
 
 #[tokio::main]
@@ -138,6 +145,10 @@ async fn main() -> Result<()> {
             println!("Cache Statistics:");
             println!("  Memory entries: {}", stats.memory_entries);
             println!("  Memory capacity: {}", stats.memory_capacity);
+        }
+
+        Commands::Bench { output } => {
+            commands::run_benchmarks(storage, output).await?;
         }
     }
 

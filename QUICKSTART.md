@@ -136,6 +136,9 @@ cargo run --bin sandwich-cli -- examples
 # Show cache statistics
 cargo run --bin sandwich-cli -- stats
 
+# Run performance benchmarks
+cargo run --bin sandwich-cli -- --local /path/to/resources bench --output BENCHMARKS.md
+
 # Get help
 cargo run --bin sandwich-cli -- --help
 cargo run --bin sandwich-cli -- compose --help
