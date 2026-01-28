@@ -30,8 +30,8 @@ sandwich-rs/
 ### Prerequisites
 
 - Rust 1.75+ ([install](https://rustup.rs/))
-- AWS credentials with S3 access
-- S3 bucket with sandwich images
+- **For local development**: Image resources on your filesystem (no AWS required!)
+- **For production/S3**: AWS credentials with S3 access and S3 bucket with sandwich images
 
 ### Environment Setup
 
@@ -75,7 +75,21 @@ cargo test -- --nocapture
 
 ### CLI Tool
 
-The CLI provides an easy way to test and generate images:
+The CLI provides an easy way to test and generate images.
+
+**Local Development (No AWS Required):**
+
+```bash
+# Use local filesystem storage
+cargo run --bin sandwich-cli -- \
+  --local /path/to/your/resources \
+  compose --example basic -o result.jpg
+
+# List available examples
+cargo run --bin sandwich-cli -- --local /path/to/resources examples
+```
+
+**With AWS S3:**
 
 ```bash
 # List available examples

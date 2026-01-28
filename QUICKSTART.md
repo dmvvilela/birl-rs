@@ -2,7 +2,39 @@
 
 ## 🚀 Get Started in 30 Seconds
 
-### 1. Set up environment
+### Option A: Local Development (No AWS Required!)
+
+If you have image resources locally, you can test without any AWS setup:
+
+```bash
+cd /Users/danvilela/Code/Work/DivBrands/sandwich-rs
+
+# Use local filesystem storage
+cargo run --bin sandwich-cli -- \
+  --local /path/to/your/resources \
+  compose --example basic -o result.jpg
+
+# For DivBrands developers:
+cargo run --bin sandwich-cli -- \
+  --local /Users/danvilela/Code/Work/DivBrands/sandwich-rust-prep/src/scripts/resources \
+  compose --example basic -o result.jpg
+```
+
+Expected directory structure:
+```
+resources/
+├── front/
+│   ├── hoodies/
+│   ├── pants/
+│   ├── plate/
+│   └── ...
+├── back/
+├── side/
+├── left/
+└── right/
+```
+
+### Option B: With AWS S3
 
 ```bash
 cd /Users/danvilela/Code/Work/DivBrands/sandwich-rs
@@ -10,6 +42,9 @@ cd /Users/danvilela/Code/Work/DivBrands/sandwich-rs
 # Copy and edit environment file
 cp .env.example .env
 # Edit .env with your AWS credentials
+
+# Run without --local flag to use S3
+cargo run --bin sandwich-cli -- compose --example basic -o result.jpg
 ```
 
 ### 2. Try the CLI with examples
@@ -54,9 +89,16 @@ cargo run --bin sandwich-cli -- compose \
 
 ## 📊 CLI Commands Reference
 
+### Global Options
+```bash
+  -l, --local <PATH>         Use local filesystem instead of S3
+  -v, --verbose              Enable verbose logging
+  -h, --help                 Print help
+```
+
 ### Compose Command
 ```bash
-cargo run --bin sandwich-cli -- compose [OPTIONS]
+cargo run --bin sandwich-cli -- [GLOBAL OPTIONS] compose [OPTIONS]
 
 Options:
   --view <VIEW>              View to render [default: front]
@@ -65,8 +107,17 @@ Options:
   -e, --example <EXAMPLE>    Use a pre-made example
   -o, --output <OUTPUT>      Output file path
   -b, --bypass-cache         Bypass cache and force regeneration
-  -v, --verbose              Enable verbose logging
   -h, --help                 Print help
+
+Examples:
+  # Local storage
+  cargo run --bin sandwich-cli -- --local /path/to/resources compose --example basic -o test.jpg
+
+  # S3 storage
+  cargo run --bin sandwich-cli -- compose --example basic -o test.jpg
+
+  # Verbose logging
+  cargo run --bin sandwich-cli -- -v --local /path/to/resources compose --example basic
 ```
 
 ### Available Examples
