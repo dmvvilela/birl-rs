@@ -27,3 +27,6 @@ result.*
 
 # Test artifacts
 tests/output/
+
+# Resources (proprietary images)
+resources/

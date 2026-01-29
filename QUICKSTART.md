@@ -1,4 +1,4 @@
-# Sandwich Rust - Quick Start Guide
+# BIRL Rust - Quick Start Guide
 
 ## 🚀 Get Started in 30 Seconds
 
@@ -7,16 +7,9 @@
 If you have image resources locally, you can test without any AWS setup:
 
 ```bash
-cd /Users/danvilela/Code/Work/DivBrands/sandwich-rs
-
 # Use local filesystem storage
-cargo run --bin sandwich-cli -- \
+cargo run --bin birl-cli -- \
   --local /path/to/your/resources \
-  compose --example basic -o result.jpg
-
-# For DivBrands developers:
-cargo run --bin sandwich-cli -- \
-  --local /Users/danvilela/Code/Work/DivBrands/sandwich-rust-prep/src/scripts/resources \
   compose --example basic -o result.jpg
 ```
 
@@ -37,51 +30,49 @@ resources/
 ### Option B: With AWS S3
 
 ```bash
-cd /Users/danvilela/Code/Work/DivBrands/sandwich-rs
-
 # Copy and edit environment file
 cp .env.example .env
 # Edit .env with your AWS credentials
 
 # Run without --local flag to use S3
-cargo run --bin sandwich-cli -- compose --example basic -o result.jpg
+cargo run --bin birl-cli -- compose --example basic -o result.jpg
 ```
 
 ### 2. Try the CLI with examples
 
 ```bash
 # List all available examples
-cargo run --bin sandwich-cli -- examples
+cargo run --bin birl-cli -- examples
 
 # Try the basic example (single hoodie)
-cargo run --bin sandwich-cli -- compose --example basic -o result.jpg
+cargo run --bin birl-cli -- compose --example basic -o result.jpg
 
 # Full outfit example
-cargo run --bin sandwich-cli -- compose --example full-outfit -o outfit.jpg
+cargo run --bin birl-cli -- compose --example full-outfit -o outfit.jpg
 
 # With patches
-cargo run --bin sandwich-cli -- compose --example with-patches -o patches.jpg
+cargo run --bin birl-cli -- compose --example with-patches -o patches.jpg
 ```
 
 ### 3. Custom compositions
 
 ```bash
 # Front view with custom items
-cargo run --bin sandwich-cli -- compose \
+cargo run --bin birl-cli -- compose \
   --params "hoodies/baerskin4-black,pants/cargo-darkgreen,hats/beanie-black" \
   -o custom.jpg
 
 # Back view
-cargo run --bin sandwich-cli -- compose \
+cargo run --bin birl-cli -- compose \
   --example full-outfit \
   --view back \
   -o back-view.jpg
 
 # With verbose logging
-cargo run --bin sandwich-cli -- -v compose --example basic -o test.jpg
+cargo run --bin birl-cli -- -v compose --example basic -o test.jpg
 
 # Bypass cache to regenerate
-cargo run --bin sandwich-cli -- compose \
+cargo run --bin birl-cli -- compose \
   --example basic \
   --bypass-cache \
   -o fresh.jpg
@@ -98,7 +89,7 @@ cargo run --bin sandwich-cli -- compose \
 
 ### Compose Command
 ```bash
-cargo run --bin sandwich-cli -- [GLOBAL OPTIONS] compose [OPTIONS]
+cargo run --bin birl-cli -- [GLOBAL OPTIONS] compose [OPTIONS]
 
 Options:
   --view <VIEW>              View to render [default: front]
@@ -111,13 +102,13 @@ Options:
 
 Examples:
   # Local storage
-  cargo run --bin sandwich-cli -- --local /path/to/resources compose --example basic -o test.jpg
+  cargo run --bin birl-cli -- --local /path/to/resources compose --example basic -o test.jpg
 
   # S3 storage
-  cargo run --bin sandwich-cli -- compose --example basic -o test.jpg
+  cargo run --bin birl-cli -- compose --example basic -o test.jpg
 
   # Verbose logging
-  cargo run --bin sandwich-cli -- -v --local /path/to/resources compose --example basic
+  cargo run --bin birl-cli -- -v --local /path/to/resources compose --example basic
 ```
 
 ### Available Examples
@@ -131,27 +122,27 @@ Examples:
 ### Other Commands
 ```bash
 # List all examples with descriptions
-cargo run --bin sandwich-cli -- examples
+cargo run --bin birl-cli -- examples
 
 # Show cache statistics
-cargo run --bin sandwich-cli -- stats
+cargo run --bin birl-cli -- stats
 
 # Run performance benchmarks
-cargo run --bin sandwich-cli -- --local /path/to/resources bench --output BENCHMARKS.md
+cargo run --bin birl-cli -- --local /path/to/resources bench --output BENCHMARKS.md
 
 # Get help
-cargo run --bin sandwich-cli -- --help
-cargo run --bin sandwich-cli -- compose --help
+cargo run --bin birl-cli -- --help
+cargo run --bin birl-cli -- compose --help
 ```
 
 ## 🌐 Start the Web Server
 
 ```bash
 # Development mode
-cargo run --bin sandwich-server
+cargo run --bin birl-server
 
 # Production mode (optimized)
-cargo run --release --bin sandwich-server
+cargo run --release --bin birl-server
 
 # The server will start on http://localhost:3000
 ```
@@ -194,7 +185,7 @@ curl http://localhost:3000/products
 
 ```bash
 # Build Docker image
-docker build -t sandwich-server .
+docker build -t birl-server .
 
 # Run with docker-compose (easiest)
 docker-compose up
@@ -205,7 +196,7 @@ docker run -p 3000:3000 \
   -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
   -e AWS_REGION=$AWS_REGION \
   -e AWS_BUCKET_NAME=$AWS_BUCKET_NAME \
-  sandwich-server
+  birl-server
 ```
 
 ## 🔧 Development Commands
@@ -284,7 +275,7 @@ RUST_LOG=info               # Log level (trace, debug, info, warn, error)
 ### "Base plate not found"
 - Check your AWS credentials are set correctly
 - Verify the bucket name in `.env`
-- Ensure images exist at `sandwich/{view}/plate/` in your bucket
+- Ensure images exist at `birl/{view}/plate/` in your bucket
 
 ### "Warning: AWS_BUCKET_NAME not set"
 - Copy `.env.example` to `.env` and set your bucket name
@@ -292,7 +283,7 @@ RUST_LOG=info               # Log level (trace, debug, info, warn, error)
 ### CLI option conflict errors
 - Use `--view` (not `-v`) for view selection
 - Use `-v` for verbose logging
-- Example: `cargo run --bin sandwich-cli -- -v compose --view back --example basic`
+- Example: `cargo run --bin birl-cli -- -v compose --view back --example basic`
 
 ### Build errors
 ```bash
@@ -312,7 +303,7 @@ cargo build --workspace
 
 ### Testing a specific combination
 ```bash
-cargo run --bin sandwich-cli -- compose \
+cargo run --bin birl-cli -- compose \
   --params "hoodies/baerskin4-black,jackets/softshell-grey" \
   -o test.jpg
 ```
@@ -320,7 +311,7 @@ cargo run --bin sandwich-cli -- compose \
 ### Generating all views of an outfit
 ```bash
 for view in front back side left right; do
-  cargo run --bin sandwich-cli -- compose \
+  cargo run --bin birl-cli -- compose \
     --example full-outfit \
     --view $view \
     -o "outfit-${view}.jpg"
@@ -330,12 +321,12 @@ done
 ### Performance testing
 ```bash
 # With timing
-time cargo run --release --bin sandwich-cli -- compose \
+time cargo run --release --bin birl-cli -- compose \
   --example full-outfit \
   -o perf-test.jpg
 
 # With verbose logging to see cache hits
-cargo run --bin sandwich-cli -- -v compose \
+cargo run --bin birl-cli -- -v compose \
   --example full-outfit \
   -o test.jpg
 ```
@@ -355,4 +346,4 @@ ab -n 100 -c 10 -p request.json -T application/json \
 
 ---
 
-**Need help?** Check the full [README.md](README.md) or [file an issue](https://github.com/divbrands/sandwich-rs/issues).
+**Need help?** Check the full [README.md](README.md) or [file an issue](https://github.com/dmvvilela/birl-rs/issues).

@@ -1,4 +1,4 @@
-//! sandwich-storage: S3 storage and caching layer for the Sandwich app
+//! birl-storage: S3 storage and caching layer for the BIRL app
 //!
 //! This crate provides storage operations for fetching layers from S3,
 //! caching composites, and managing a multi-tier cache (memory + S3).
@@ -11,7 +11,7 @@ use anyhow::{Context, Result};
 use aws_sdk_s3::Client;
 use bytes::Bytes;
 use futures::future::try_join_all;
-use sandwich_core::{LayerParam, View};
+use birl_core::{LayerParam, View};
 use std::path::PathBuf;
 use std::sync::Arc;
 use tracing::{debug, warn};

@@ -1,8 +1,35 @@
-# Sandwich Rust - High-Performance Image Composition
+# BIRL - Build Instant Real Looks
 
-A blazing-fast Rust rewrite of the Sandwich image composition app. Layers clothing items (PNGs) over a base model (JPEG) to create product visualizations with ~3-5x faster compositing and 5-10x faster batch processing compared to the TypeScript version.
+> **B**uild **I**nstant **R**eal **L**ooks
 
-> 🚀 **Want to get started quickly?** See [QUICKSTART.md](QUICKSTART.md) for common commands and examples!
+A high-performance image composition engine written in Rust. Layers clothing items (PNGs) over a base model (JPEG) to create product visualizations with blazing speed.
+
+---
+
+### How BIRL got its name
+
+```
+Me:     what should we name this thing?
+Claude: Here are some acronym options for BIRL:
+
+        Product-focused:
+        - Build Instant Real Looks
+        - Blend Items, Realize Looks
+
+        Action-oriented:
+        - Browse, Imagine, Realize, Launch
+        - Build It, Rock It, Love It
+
+        Playful/Catchy:
+        - Bring It to Real Life
+
+Me:     "Build Instant Real Looks" - that's the one. ship it.
+Claude: shipped.
+```
+
+And that's how an AI named a Rust crate at 2am. You're welcome.
+
+---
 
 ## Features
 
@@ -16,13 +43,13 @@ A blazing-fast Rust rewrite of the Sandwich image composition app. Layers clothi
 ## Architecture
 
 ```
-sandwich-rs/
+birl-rs/
 ├── crates/
-│   ├── sandwich-core/       # Business logic & composition engine
-│   ├── sandwich-storage/    # S3 client & caching
-│   ├── sandwich-server/     # Axum web API
-│   └── sandwich-cli/        # CLI tool with examples
-└── tests/                   # Integration tests
+│   ├── birl-core/       # Business logic & composition engine
+│   ├── birl-storage/    # S3 client & caching
+│   ├── birl-server/     # Axum web API
+│   └── birl-cli/        # CLI tool with examples
+└── tests/               # Integration tests
 ```
 
 ## Quick Start
@@ -31,7 +58,7 @@ sandwich-rs/
 
 - Rust 1.75+ ([install](https://rustup.rs/))
 - **For local development**: Image resources on your filesystem (no AWS required!)
-- **For production/S3**: AWS credentials with S3 access and S3 bucket with sandwich images
+- **For production/S3**: AWS credentials with S3 access and S3 bucket with images
 
 ### Environment Setup
 
@@ -43,7 +70,7 @@ cp .env.example .env
 AWS_ACCESS_KEY_ID=your_access_key
 AWS_SECRET_ACCESS_KEY=your_secret_key
 AWS_REGION=us-east-1
-AWS_BUCKET_NAME=your-sandwich-bucket
+AWS_BUCKET_NAME=your-birl-bucket
 PORT=3000  # Optional, defaults to 3000
 ```
 
@@ -54,8 +81,8 @@ PORT=3000  # Optional, defaults to 3000
 cargo build --release
 
 # Build specific crate
-cargo build -p sandwich-server --release
-cargo build -p sandwich-cli --release
+cargo build -p birl-server --release
+cargo build -p birl-cli --release
 ```
 
 ### Run Tests
@@ -65,7 +92,7 @@ cargo build -p sandwich-cli --release
 cargo test --workspace
 
 # Run tests for specific crate
-cargo test -p sandwich-core
+cargo test -p birl-core
 
 # Run with output
 cargo test -- --nocapture
@@ -81,44 +108,44 @@ The CLI provides an easy way to test and generate images.
 
 ```bash
 # Use local filesystem storage
-cargo run --bin sandwich-cli -- \
+cargo run --bin birl-cli -- \
   --local /path/to/your/resources \
   compose --example basic -o result.jpg
 
 # List available examples
-cargo run --bin sandwich-cli -- --local /path/to/resources examples
+cargo run --bin birl-cli -- --local /path/to/resources examples
 ```
 
 **With AWS S3:**
 
 ```bash
 # List available examples
-cargo run --bin sandwich-cli -- examples
+cargo run --bin birl-cli -- examples
 
 # Use a pre-made example
-cargo run --bin sandwich-cli -- compose --example basic -o result.jpg
+cargo run --bin birl-cli -- compose --example basic -o result.jpg
 
 # Custom composition
-cargo run --bin sandwich-cli -- compose \
+cargo run --bin birl-cli -- compose \
   --params "hoodies/baerskin4-black,pants/cargo-darkgreen" \
   -o outfit.jpg
 
 # Different views (note: use --view, not -v which is for verbose)
-cargo run --bin sandwich-cli -- compose \
+cargo run --bin birl-cli -- compose \
   --example full-outfit \
   --view back \
   -o back-view.jpg
 
 # Bypass cache to force regeneration
-cargo run --bin sandwich-cli -- compose \
+cargo run --bin birl-cli -- compose \
   --example basic \
   --bypass-cache
 
 # Show cache statistics
-cargo run --bin sandwich-cli -- stats
+cargo run --bin birl-cli -- stats
 
 # Enable verbose logging
-cargo run --bin sandwich-cli -- -v compose --example basic
+cargo run --bin birl-cli -- -v compose --example basic
 ```
 
 #### Available Examples
@@ -136,10 +163,10 @@ Start the Axum web server:
 
 ```bash
 # Development
-cargo run --bin sandwich-server
+cargo run --bin birl-server
 
 # Production (optimized build)
-cargo run --release --bin sandwich-server
+cargo run --release --bin birl-server
 ```
 
 #### API Endpoints
@@ -159,9 +186,9 @@ curl -X POST http://localhost:3000/create \
 Request body:
 ```json
 {
-  "p": "category/sku,category/sku,...",  // Required
-  "view": "front",                       // Optional: front|back|side|left|right
-  "bypassCache": false                   // Optional: force regeneration
+  "p": "category/sku,category/sku,...",
+  "view": "front",
+  "bypassCache": false
 }
 ```
 
@@ -203,23 +230,23 @@ Layers are composited in this exact order (bottom to top):
 ### SKU Normalization
 
 Size variations are automatically removed:
-- `mensdenimjeans-blue-36` → `mensdenimjeans-blue`
-- `baerskinzip-grey-s` → `baerskinzip-grey`
-- `baerskin4-black-xl` → `baerskin4-black`
+- `mensdenimjeans-blue-36` -> `mensdenimjeans-blue`
+- `baerskinzip-grey-s` -> `baerskinzip-grey`
+- `baerskin4-black-xl` -> `baerskin4-black`
 
 ### Special Categories
 
 **Gloves**: Automatically categorized by type
-- Ski gloves → `gloves-top`
-- Other gloves → `gloves-bottom`
+- Ski gloves -> `gloves-top`
+- Other gloves -> `gloves-bottom`
 
 **Jackets**: Automatically categorized by style
-- Greenland jackets → `outer-jackets`
-- Other jackets → `jackets`
+- Greenland jackets -> `outer-jackets`
+- Other jackets -> `jackets`
 
 **Patches**: Context-aware placement
-- With softshell jacket → `softshell-patches`
-- Standard → `patches`
+- With softshell jacket -> `softshell-patches`
+- Standard -> `patches`
 - Position-aware: `-left` or `-right` suffix
 
 ## Performance
@@ -243,22 +270,22 @@ Size variations are automatically removed:
 
 ### Project Structure
 
-**sandwich-core**: Core business logic
+**birl-core**: Core business logic
 - `models.rs` - Type-safe enums (View, LayerOrder, Sku)
 - `layers.rs` - Layer normalization and ordering
 - `compositor.rs` - Image composition engine
 - `cache.rs` - xxHash64 cache key generation
 
-**sandwich-storage**: S3 and caching layer
+**birl-storage**: S3 and caching layer
 - `s3.rs` - S3 client wrapper
 - `cache.rs` - Multi-tier cache implementation
 
-**sandwich-server**: Web API
+**birl-server**: Web API
 - `routes/create.rs` - POST /create endpoint
 - `routes/products.rs` - GET /products endpoint
 - `middleware/auth.rs` - Webhook validation
 
-**sandwich-cli**: Command-line tool
+**birl-cli**: Command-line tool
 - `commands/compose.rs` - Image composition
 - `commands/examples.rs` - Pre-made examples
 
@@ -266,10 +293,7 @@ Size variations are automatically removed:
 
 ```bash
 # Start server with hot reload (requires cargo-watch)
-cargo watch -x 'run --bin sandwich-server'
-
-# Test CLI commands
-./scripts/test-cli.sh  # If you create this script
+cargo watch -x 'run --bin birl-server'
 
 # Run benchmarks
 cargo bench
@@ -277,7 +301,7 @@ cargo bench
 
 ### Adding New Examples
 
-Edit `crates/sandwich-cli/src/commands/examples.rs`:
+Edit `crates/birl-cli/src/commands/examples.rs`:
 
 ```rust
 Example {
@@ -295,7 +319,7 @@ Example {
 - Sub-millisecond access time
 
 ### L2 Cache (S3)
-- Persistent storage in `sandwich/cache/`
+- Persistent storage in `birl/cache/`
 - Key format: `{xxhash64}.jpg`
 - Automatic invalidation via key changes
 
@@ -306,48 +330,28 @@ Cache keys use xxHash64 for speed:
 key = xxh64(sorted_params + view + plate_value)
 ```
 
-Example: `hoodies/baerskin4-black,pants/cargo-black` + `front` + `swatthermals-black`
-→ `a1b2c3d4e5f6g7h8.jpg`
-
 ## Deployment
 
 ### Docker (Recommended)
 
-```dockerfile
-FROM rust:1.75 as builder
-WORKDIR /app
-COPY . .
-RUN cargo build --release --bin sandwich-server
-
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y ca-certificates libssl3
-COPY --from=builder /app/target/release/sandwich-server /usr/local/bin/
-CMD ["sandwich-server"]
-```
-
-Build and run:
 ```bash
-docker build -t sandwich-server .
+docker build -t birl-server .
 docker run -p 3000:3000 \
   -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
   -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
   -e AWS_REGION=$AWS_REGION \
   -e AWS_BUCKET_NAME=$AWS_BUCKET_NAME \
-  sandwich-server
+  birl-server
 ```
 
 ### Native Deployment
 
 ```bash
 # Build optimized binary
-cargo build --release --bin sandwich-server
+cargo build --release --bin birl-server
 
 # Binary location
-./target/release/sandwich-server
-
-# Run with systemd (example)
-sudo cp target/release/sandwich-server /usr/local/bin/
-sudo systemctl start sandwich-server
+./target/release/birl-server
 ```
 
 ## Comparison with TypeScript Version
@@ -363,11 +367,11 @@ sudo systemctl start sandwich-server
 ## Troubleshooting
 
 ### "Base plate not found"
-- Ensure S3 bucket has images in `sandwich/{view}/plate/` directory
+- Ensure S3 bucket has images in `birl/{view}/plate/` directory
 - Check AWS credentials and bucket permissions
 
 ### "No such key" errors
-- Verify image paths in S3: `sandwich/{view}/{category}/{sku}.png`
+- Verify image paths in S3: `birl/{view}/{category}/{sku}.png`
 - Run with `-v` flag for detailed logging
 
 ### Compilation errors
@@ -393,5 +397,4 @@ MIT
 
 ## Acknowledgments
 
-- Original TypeScript implementation by the DivBrands team
 - Built with Axum, image-rs, and AWS SDK for Rust

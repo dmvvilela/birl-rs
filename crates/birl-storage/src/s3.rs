@@ -1,7 +1,7 @@
 use anyhow::{Context, Result};
 use aws_sdk_s3::Client;
 use bytes::Bytes;
-use sandwich_core::View;
+use birl_core::View;
 use tracing::{debug, warn};
 
 /// S3 client wrapper for fetching and saving images
@@ -17,7 +17,7 @@ impl S3Storage {
     }
 
     /// Fetch a layer image from S3
-    /// Path format: sandwich/{view}/{category}/{sku}.{extension}
+    /// Path format: birl/{view}/{category}/{sku}.{extension}
     pub async fn fetch_layer(
         &self,
         category: &str,
@@ -25,7 +25,7 @@ impl S3Storage {
         view: View,
         extension: &str,
     ) -> Result<Option<Bytes>> {
-        let key = format!("sandwich/{}/{}/{}.{}", view.as_str(), category, sku, extension);
+        let key = format!("birl/{}/{}/{}.{}", view.as_str(), category, sku, extension);
 
         match self.fetch_object(&key).await {
             Ok(data) => {
@@ -40,9 +40,9 @@ impl S3Storage {
     }
 
     /// Fetch a cached composite image from S3
-    /// Path format: sandwich/cache/{cache_key}.jpg
+    /// Path format: birl/cache/{cache_key}.jpg
     pub async fn fetch_cached(&self, cache_key: &str) -> Result<Option<Bytes>> {
-        let key = format!("sandwich/cache/{}.jpg", cache_key);
+        let key = format!("birl/cache/{}.jpg", cache_key);
 
         match self.fetch_object(&key).await {
             Ok(data) => {
@@ -58,7 +58,7 @@ impl S3Storage {
 
     /// Save a composite image to S3 cache
     pub async fn save_to_cache(&self, cache_key: &str, data: &[u8]) -> Result<()> {
-        let key = format!("sandwich/cache/{}.jpg", cache_key);
+        let key = format!("birl/cache/{}.jpg", cache_key);
 
         self.client
             .put_object()
@@ -76,9 +76,9 @@ impl S3Storage {
     }
 
     /// Fetch a cached JSON file from S3
-    /// Path format: sandwich/cache/{key}.json
+    /// Path format: birl/cache/{key}.json
     pub async fn fetch_cached_json(&self, key: &str) -> Result<Option<String>> {
-        let s3_key = format!("sandwich/cache/{}.json", key);
+        let s3_key = format!("birl/cache/{}.json", key);
 
         match self.fetch_object(&s3_key).await {
             Ok(data) => {

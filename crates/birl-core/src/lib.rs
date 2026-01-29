@@ -1,4 +1,4 @@
-//! sandwich-core: Core image composition logic for the Sandwich app
+//! birl-core: Core image composition logic for the BIRL app
 //!
 //! This crate provides the business logic for layering clothing items over base models.
 //! It handles SKU normalization, layer ordering, and image composition.

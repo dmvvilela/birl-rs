@@ -4,8 +4,8 @@ use axum::{
     response::{IntoResponse, Response},
     Json,
 };
-use sandwich_core::{compose_layers, generate_cache_key, parse_params, LayerNormalizer, View};
-use sandwich_storage::StorageService;
+use birl_core::{compose_layers, generate_cache_key, parse_params, LayerNormalizer, View};
+use birl_storage::StorageService;
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 use tracing::{error, info, warn};

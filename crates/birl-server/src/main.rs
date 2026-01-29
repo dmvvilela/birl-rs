@@ -6,7 +6,7 @@ use axum::{
     routing::{get, post},
     Router,
 };
-use sandwich_storage::StorageService;
+use birl_storage::StorageService;
 use std::sync::Arc;
 use tower_http::{
     cors::{Any, CorsLayer},
@@ -29,7 +29,7 @@ async fn main() -> anyhow::Result<()> {
 
     // Get bucket name from environment
     let bucket_name = std::env::var("AWS_BUCKET_NAME")
-        .unwrap_or_else(|_| "sandwich-bucket".to_string());
+        .unwrap_or_else(|_| "birl-bucket".to_string());
 
     info!("Using S3 bucket: {}", bucket_name);
 

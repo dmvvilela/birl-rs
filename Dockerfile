@@ -15,7 +15,7 @@ COPY Cargo.toml Cargo.toml
 COPY crates/ crates/
 
 # Build dependencies (cached layer)
-RUN cargo build --release --bin sandwich-server
+RUN cargo build --release --bin birl-server
 
 # Runtime stage
 FROM debian:bookworm-slim
@@ -27,15 +27,15 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Create non-root user
-RUN useradd -m -u 1000 sandwich && \
+RUN useradd -m -u 1000 birl && \
     mkdir -p /app && \
-    chown -R sandwich:sandwich /app
+    chown -R birl:birl /app
 
 # Copy binary from builder
-COPY --from=builder /app/target/release/sandwich-server /usr/local/bin/sandwich-server
+COPY --from=builder /app/target/release/birl-server /usr/local/bin/birl-server
 
 # Switch to non-root user
-USER sandwich
+USER birl
 
 # Expose port
 EXPOSE 3000
@@ -45,4 +45,4 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:3000/health || exit 1
 
 # Run the server
-CMD ["sandwich-server"]
+CMD ["birl-server"]

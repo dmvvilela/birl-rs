@@ -1,13 +1,13 @@
 # Implementation Summary
 
-## Rust Sandwich App - Complete Implementation
+## Rust BIRL App - Complete Implementation
 
-Successfully implemented a high-performance Rust rewrite of the Sandwich image composition app following the detailed implementation plan.
+Successfully implemented a high-performance Rust rewrite of the BIRL image composition app following the detailed implementation plan.
 
 ### Project Structure
 
 ```
-sandwich-rs/
+birl-rs/
 ├── Cargo.toml                    # Workspace manifest
 ├── .env.example                  # Environment template
 ├── .gitignore                    # Git ignore rules
@@ -19,7 +19,7 @@ sandwich-rs/
 ├── IMPLEMENTATION_SUMMARY.md     # This file
 │
 ├── crates/
-│   ├── sandwich-core/           # ✅ Core business logic
+│   ├── birl-core/           # ✅ Core business logic
 │   │   ├── src/
 │   │   │   ├── lib.rs          # Public API
 │   │   │   ├── models.rs       # View, LayerOrder, Sku, LayerParam
@@ -28,14 +28,14 @@ sandwich-rs/
 │   │   │   └── cache.rs        # xxHash64 cache keys
 │   │   └── Cargo.toml
 │   │
-│   ├── sandwich-storage/        # ✅ S3 and caching layer
+│   ├── birl-storage/        # ✅ S3 and caching layer
 │   │   ├── src/
 │   │   │   ├── lib.rs          # StorageService
 │   │   │   ├── s3.rs           # S3Storage client
 │   │   │   └── cache.rs        # ImageCache (LRU + S3)
 │   │   └── Cargo.toml
 │   │
-│   ├── sandwich-server/         # ✅ Axum web API
+│   ├── birl-server/         # ✅ Axum web API
 │   │   ├── src/
 │   │   │   ├── main.rs         # Server entry point
 │   │   │   ├── routes/
@@ -47,7 +47,7 @@ sandwich-rs/
 │   │   │       └── auth.rs     # Webhook validation
 │   │   └── Cargo.toml
 │   │
-│   └── sandwich-cli/            # ✅ CLI tool
+│   └── birl-cli/            # ✅ CLI tool
 │       ├── src/
 │       │   ├── main.rs          # CLI entry point
 │       │   └── commands/
@@ -61,7 +61,7 @@ sandwich-rs/
 
 ## Implementation Details
 
-### Phase 1: sandwich-core ✅
+### Phase 1: birl-core ✅
 
 **Files Created:**
 - `src/models.rs` (270 lines) - Type-safe data models
@@ -98,14 +98,14 @@ sandwich-rs/
 - Cache key consistency tests
 - Full workflow integration tests
 
-### Phase 2: sandwich-storage ✅
+### Phase 2: birl-storage ✅
 
 **Files Created:**
 - `src/s3.rs` (130 lines) - S3 client wrapper
   - `S3Storage` for all S3 operations
-  - Layer fetching: `sandwich/{view}/{category}/{sku}.{ext}`
-  - Cache operations: `sandwich/cache/{hash}.jpg`
-  - JSON caching: `sandwich/cache/{key}.json`
+  - Layer fetching: `birl/{view}/{category}/{sku}.{ext}`
+  - Cache operations: `birl/cache/{hash}.jpg`
+  - JSON caching: `birl/cache/{key}.json`
   - Error handling with tracing
 
 - `src/cache.rs` (110 lines) - Multi-tier cache
@@ -126,7 +126,7 @@ sandwich-rs/
 - Memory cache put/get operations
 - S3 fetch (integration test, requires credentials)
 
-### Phase 3: sandwich-server ✅
+### Phase 3: birl-server ✅
 
 **Files Created:**
 - `src/main.rs` (80 lines) - Server setup
@@ -157,7 +157,7 @@ sandwich-rs/
 - `GET /products` - Get cached product data
 - `GET /health` - Health check
 
-### Phase 4: sandwich-cli ✅
+### Phase 4: birl-cli ✅
 
 **Files Created:**
 - `src/main.rs` (145 lines) - CLI application
@@ -248,10 +248,10 @@ sandwich-rs/
 
 ```bash
 # All crates compile successfully
-✅ sandwich-core: OK (25 tests passed)
-✅ sandwich-storage: OK (4 tests, 3 passed, 1 ignored)
-✅ sandwich-server: OK (compiles clean)
-✅ sandwich-cli: OK (compiles clean)
+✅ birl-core: OK (25 tests passed)
+✅ birl-storage: OK (4 tests, 3 passed, 1 ignored)
+✅ birl-server: OK (compiles clean)
+✅ birl-cli: OK (compiles clean)
 
 # Workspace build
 ✅ cargo build --workspace: SUCCESS
@@ -320,13 +320,13 @@ These can be added in future iterations as needed.
 ### CLI
 ```bash
 # List examples
-cargo run --bin sandwich-cli -- examples
+cargo run --bin birl-cli -- examples
 
 # Use an example
-cargo run --bin sandwich-cli -- compose --example basic -o result.jpg
+cargo run --bin birl-cli -- compose --example basic -o result.jpg
 
 # Custom composition
-cargo run --bin sandwich-cli -- compose \
+cargo run --bin birl-cli -- compose \
   --view front \
   --params "hoodies/baerskin4-black,pants/cargo-darkgreen" \
   -o custom.jpg
@@ -335,7 +335,7 @@ cargo run --bin sandwich-cli -- compose \
 ### Server
 ```bash
 # Start server
-cargo run --bin sandwich-server
+cargo run --bin birl-server
 
 # Create composite
 curl -X POST http://localhost:3000/create \
@@ -346,7 +346,7 @@ curl -X POST http://localhost:3000/create \
 
 ## Conclusion
 
-The Rust Sandwich app implementation is **complete** and ready for use. All core functionality from the TypeScript version has been ported with significant performance improvements and type safety enhancements.
+The Rust BIRL app implementation is **complete** and ready for use. All core functionality from the TypeScript version has been ported with significant performance improvements and type safety enhancements.
 
 **Total Implementation:**
 - 4 crates

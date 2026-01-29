@@ -2,7 +2,7 @@
 
 # Default target
 help:
-	@echo "Sandwich Rust - Makefile Commands"
+	@echo "BIRL Rust - Makefile Commands"
 	@echo ""
 	@echo "Build & Test:"
 	@echo "  make build        - Build all crates in release mode"
@@ -53,18 +53,18 @@ bench:
 
 # Run targets
 run-server:
-	cargo run --release --bin sandwich-server
+	cargo run --release --bin birl-server
 
 run-cli:
-	cargo run --bin sandwich-cli -- examples
+	cargo run --bin birl-cli -- examples
 
 dev:
-	cargo watch -x 'run --bin sandwich-server'
+	cargo watch -x 'run --bin birl-server'
 
 # Install
 install:
-	cargo install --path crates/sandwich-server
-	cargo install --path crates/sandwich-cli
+	cargo install --path crates/birl-server
+	cargo install --path crates/birl-cli
 
 # Clean
 clean:
@@ -72,20 +72,20 @@ clean:
 
 # Docker
 docker-build:
-	docker build -t sandwich-server:latest .
+	docker build -t birl-server:latest .
 
 docker-run:
-	docker run -p 3000:3000 --env-file .env sandwich-server:latest
+	docker run -p 3000:3000 --env-file .env birl-server:latest
 
 # Examples
 example-basic:
-	cargo run --bin sandwich-cli -- compose --example basic --output examples/basic.jpg
+	cargo run --bin birl-cli -- compose --example basic --output examples/basic.jpg
 
 example-full:
-	cargo run --bin sandwich-cli -- compose --example full-outfit --output examples/full-outfit.jpg
+	cargo run --bin birl-cli -- compose --example full-outfit --output examples/full-outfit.jpg
 
 example-patches:
-	cargo run --bin sandwich-cli -- compose --example with-patches --output examples/with-patches.jpg
+	cargo run --bin birl-cli -- compose --example with-patches --output examples/with-patches.jpg
 
 # All examples
 examples: example-basic example-full example-patches

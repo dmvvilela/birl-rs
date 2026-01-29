@@ -1,6 +1,6 @@
 use anyhow::{Context, Result};
 use bytes::Bytes;
-use sandwich_core::View;
+use birl_core::View;
 use std::path::{Path, PathBuf};
 use tracing::{debug, warn};
 
@@ -133,8 +133,8 @@ mod tests {
 
     #[tokio::test]
     async fn test_local_storage_creation() {
-        let storage = LocalStorage::new("/tmp/sandwich-test");
-        assert_eq!(storage.base_path(), Path::new("/tmp/sandwich-test"));
+        let storage = LocalStorage::new("/tmp/birl-test");
+        assert_eq!(storage.base_path(), Path::new("/tmp/birl-test"));
     }
 
     #[tokio::test]

@@ -1,6 +1,6 @@
 use anyhow::{Context, Result};
-use sandwich_core::{compose_layers, generate_cache_key, parse_params, LayerNormalizer, View};
-use sandwich_storage::StorageService;
+use birl_core::{compose_layers, generate_cache_key, parse_params, LayerNormalizer, View};
+use birl_storage::StorageService;
 use std::sync::Arc;
 use tracing::{info, warn};
 

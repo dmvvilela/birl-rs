@@ -1,16 +1,16 @@
 [workspace]
 members = [
-    "crates/sandwich-core",
-    "crates/sandwich-storage",
-    "crates/sandwich-server",
-    "crates/sandwich-cli",
+    "crates/birl-core",
+    "crates/birl-storage",
+    "crates/birl-server",
+    "crates/birl-cli",
 ]
 resolver = "2"
 
 [workspace.package]
 version = "0.1.0"
 edition = "2021"
-authors = ["DivBrands Team"]
+authors = ["Dan Vilela"]
 license = "MIT"
 
 [workspace.dependencies]

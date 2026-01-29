@@ -1,4 +1,4 @@
-# Sandwich Rust - Performance Benchmarks
+# BIRL Rust - Performance Benchmarks
 
 **Date:** 2026-01-28 15:33:30
 

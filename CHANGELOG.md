@@ -1,30 +1,30 @@
 # Changelog
 
-All notable changes to the Sandwich Rust project will be documented in this file.
+All notable changes to the BIRL Rust project will be documented in this file.
 
 ## [0.1.0] - 2026-01-28
 
 ### Added
-- Initial Rust implementation of the Sandwich image composition app
-- **sandwich-core** crate with type-safe models and composition engine
+- Initial Rust implementation of the BIRL image composition app
+- **birl-core** crate with type-safe models and composition engine
   - View enum (Front, Back, Side, Left, Right)
   - Layer ordering with compile-time guarantees
   - SKU normalization (removes size suffixes)
   - xxHash64 cache key generation
   - Image composition using image-rs
-- **sandwich-storage** crate with S3 client and caching
+- **birl-storage** crate with S3 client and caching
   - S3Storage for fetching layers and saving composites
   - Multi-tier ImageCache (LRU memory + S3 persistent)
   - Parallel layer fetching
   - Cache statistics
-- **sandwich-server** crate with Axum web API
+- **birl-server** crate with Axum web API
   - POST /create endpoint for real-time composition
   - GET /products endpoint for cached product data
   - GET /health endpoint for health checks
   - Webhook authentication middleware
   - CORS support
   - Request tracing
-- **sandwich-cli** crate with command-line tool
+- **birl-cli** crate with command-line tool
   - `compose` command for single compositions
   - Pre-made examples (basic, full-outfit, with-patches, etc.)
   - `examples` command to list available examples
@@ -33,7 +33,7 @@ All notable changes to the Sandwich Rust project will be documented in this file
   - Output to file or stdout
   - Verbose logging option
 - Comprehensive test coverage
-  - 25 unit tests in sandwich-core
+  - 25 unit tests in birl-core
   - Integration tests
   - Property-based layer combination tests
 - Complete documentation

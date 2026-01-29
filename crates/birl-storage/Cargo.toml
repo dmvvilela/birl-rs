@@ -1,21 +1,24 @@
 [package]
-name = "sandwich-core"
+name = "birl-storage"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
 
 [dependencies]
-# Serialization
-serde.workspace = true
-serde_json.workspace = true
+# Core crate
+birl-core = { path = "../birl-core" }
 
-# Hashing
-xxhash-rust.workspace = true
-
-# Image Processing
-image.workspace = true
+# AWS S3
+aws-sdk-s3.workspace = true
+aws-config.workspace = true
 bytes.workspace = true
+
+# Caching
+lru.workspace = true
+
+# Async
+tokio.workspace = true
 
 # Error Handling
 anyhow.workspace = true
@@ -23,6 +26,10 @@ thiserror.workspace = true
 
 # Logging
 tracing.workspace = true
+
+# Utilities
+futures.workspace = true
+async-trait = "0.1"
 
 [dev-dependencies]
 tokio = { workspace = true, features = ["test-util"] }

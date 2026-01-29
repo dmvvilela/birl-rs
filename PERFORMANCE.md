@@ -42,10 +42,10 @@ You were running in **DEBUG mode** which is 24x slower:
 **To get fast performance:**
 ```bash
 # Build with optimizations
-cargo build --release --bin sandwich-cli
+cargo build --release --bin birl-cli
 
 # Run the optimized binary
-./target/release/sandwich-cli --local /path/to/resources compose --example basic -o test.jpg
+./target/release/birl-cli --local /path/to/resources compose --example basic -o test.jpg
 ```
 
 ## Performance Breakdown (Release Build)
@@ -89,7 +89,7 @@ We can make it even faster by:
 ### Single Image Composition
 ```bash
 # Optimized build
-time ./target/release/sandwich-cli --local /path compose --example basic -o test.jpg
+time ./target/release/birl-cli --local /path compose --example basic -o test.jpg
 # Result: ~52ms
 ```
 
@@ -112,7 +112,7 @@ time ./target/release/sandwich-cli --local /path compose --example basic -o test
 1. **Always use `--release` for real performance**
    ```bash
    cargo build --release
-   ./target/release/sandwich-cli [...]
+   ./target/release/birl-cli [...]
    ```
 
 2. **Debug builds are only for development** (with better error messages)
@@ -125,17 +125,17 @@ time ./target/release/sandwich-cli --local /path compose --example basic -o test
 
 ```bash
 # Build optimized version
-cargo build --release --bin sandwich-cli
+cargo build --release --bin birl-cli
 
 # Run single composition
-./target/release/sandwich-cli --local /path/to/resources compose --example basic -o test.jpg
+./target/release/birl-cli --local /path/to/resources compose --example basic -o test.jpg
 
 # Run benchmarks
-./target/release/sandwich-cli --local /path/to/resources bench -o BENCHMARKS.md
+./target/release/birl-cli --local /path/to/resources bench -o BENCHMARKS.md
 
 # Compare debug vs release yourself
-cargo run --bin sandwich-cli -- --local /path compose --example basic  # Slow (1.28s)
-./target/release/sandwich-cli --local /path compose --example basic     # Fast (52ms)
+cargo run --bin birl-cli -- --local /path compose --example basic  # Slow (1.28s)
+./target/release/birl-cli --local /path compose --example basic     # Fast (52ms)
 ```
 
 ---

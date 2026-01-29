@@ -1,6 +1,6 @@
 use anyhow::Result;
-use sandwich_core::{compose_layers, generate_cache_key, parse_params, LayerNormalizer, View};
-use sandwich_storage::StorageService;
+use birl_core::{compose_layers, generate_cache_key, parse_params, LayerNormalizer, View};
+use birl_storage::StorageService;
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 use tracing::info;
@@ -132,7 +132,7 @@ async fn bench_with_cache(
 }
 
 pub async fn run_benchmarks(storage: Arc<StorageService>, output_file: Option<String>) -> Result<()> {
-    println!("\n🚀 Running Sandwich Rust Benchmarks\n");
+    println!("\n🚀 Running BIRL Rust Benchmarks\n");
 
     let mut all_results = Vec::new();
 
@@ -196,7 +196,7 @@ pub async fn run_benchmarks(storage: Arc<StorageService>, output_file: Option<St
     // Save to file if requested
     if let Some(output_path) = output_file {
         let mut output = String::new();
-        output.push_str("# Sandwich Rust - Performance Benchmarks\n\n");
+        output.push_str("# BIRL Rust - Performance Benchmarks\n\n");
         output.push_str(&format!("**Date:** {}\n\n", chrono::Local::now().format("%Y-%m-%d %H:%M:%S")));
 
         output.push_str("## Results\n\n");

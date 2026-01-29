@@ -1,4 +1,4 @@
-# Sandwich Rust - Performance Benchmarks
+# BIRL Rust - Performance Benchmarks
 
 **Date:** 2026-01-28 15:27:48
 
@@ -40,8 +40,8 @@
 For production-level performance metrics, run with release optimizations:
 
 ```bash
-cargo build --release --bin sandwich-cli
-./target/release/sandwich-cli --local /path/to/resources bench --output BENCHMARKS-RELEASE.md
+cargo build --release --bin birl-cli
+./target/release/birl-cli --local /path/to/resources bench --output BENCHMARKS-RELEASE.md
 ```
 
 Expected improvements with release build:

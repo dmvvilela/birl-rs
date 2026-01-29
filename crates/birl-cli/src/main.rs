@@ -2,16 +2,16 @@ mod commands;
 
 use anyhow::Result;
 use clap::{Parser, Subcommand};
-use sandwich_core::View;
-use sandwich_storage::StorageService;
+use birl_core::View;
+use birl_storage::StorageService;
 use std::path::PathBuf;
 use std::sync::Arc;
 use tracing::Level;
 use tracing_subscriber::FmtSubscriber;
 
 #[derive(Parser)]
-#[command(name = "sandwich-cli")]
-#[command(about = "CLI tool for the Sandwich image composition app", long_about = None)]
+#[command(name = "birl-cli")]
+#[command(about = "CLI tool for the BIRL image composition app", long_about = None)]
 struct Cli {
     #[command(subcommand)]
     command: Commands,
@@ -20,7 +20,7 @@ struct Cli {
     #[arg(short, long, global = true)]
     verbose: bool,
 
-    /// Use local filesystem instead of S3 (path to directory containing sandwich/)
+    /// Use local filesystem instead of S3 (path to directory containing birl/)
     #[arg(short, long, global = true)]
     local: Option<PathBuf>,
 }
@@ -93,7 +93,7 @@ async fn main() -> Result<()> {
         let bucket_name = std::env::var("AWS_BUCKET_NAME")
             .unwrap_or_else(|_| {
                 eprintln!("Warning: AWS_BUCKET_NAME not set, using default");
-                "sandwich-bucket".to_string()
+                "birl-bucket".to_string()
             });
 
         println!("Using S3 storage: {}", bucket_name);
