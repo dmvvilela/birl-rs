@@ -129,7 +129,7 @@ mod tests {
 
         // This is a test that would need actual S3 setup
         let result = storage
-            .fetch_layer("plate", "swatthermals-black", View::Front, "jpg")
+            .fetch_layer("plate", "base-model-black", View::Front, "jpg")
             .await;
 
         assert!(result.is_ok());

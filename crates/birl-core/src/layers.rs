@@ -88,7 +88,7 @@ impl LayerNormalizer {
     /// Normalize gloves parameters
     fn normalize_gloves(&self, sku: &str) -> Option<LayerParam> {
         // Ski gloves go on top, others go on bottom
-        // Careful: "baerskin" is NOT a ski glove
+        // Careful: "regular" is NOT a ski glove
         let is_ski_glove = sku.starts_with("ski");
         let category = if is_ski_glove {
             "gloves-top"
@@ -147,10 +147,10 @@ mod tests {
 
     #[test]
     fn test_parse_params() {
-        let params = parse_params("hoodies/baerskin4-black-xl,pants/cargo-darkgreen-40");
+        let params = parse_params("hoodies/hoodie-black-xl,pants/cargo-darkgreen-40");
         assert_eq!(params.len(), 2);
         assert_eq!(params[0].category, "hoodies");
-        assert_eq!(params[0].sku.as_str(), "baerskin4-black");
+        assert_eq!(params[0].sku.as_str(), "hoodie-black");
         assert_eq!(params[1].category, "pants");
         assert_eq!(params[1].sku.as_str(), "cargo-darkgreen");
     }
@@ -162,7 +162,7 @@ mod tests {
         let normalized = normalizer.normalize(&params[0]).unwrap();
         assert_eq!(normalized.category, "gloves-top");
 
-        let params = vec![LayerParam::new("gloves", "baerskin-black")];
+        let params = vec![LayerParam::new("gloves", "regular-gloves-black")];
         let normalizer = LayerNormalizer::new(View::Front, &params);
         let normalized = normalizer.normalize(&params[0]).unwrap();
         assert_eq!(normalized.category, "gloves-bottom");
@@ -183,7 +183,7 @@ mod tests {
 
     #[test]
     fn test_normalize_patches_back_view() {
-        let params = vec![LayerParam::new("patches-left", "americanflag-red")];
+        let params = vec![LayerParam::new("patches-left", "flag-patch-red")];
         let normalizer = LayerNormalizer::new(View::Back, &params);
         assert!(normalizer.normalize(&params[0]).is_none());
     }
@@ -192,7 +192,7 @@ mod tests {
     fn test_normalize_patches_with_softshell() {
         let params = vec![
             LayerParam::new("jackets", "softshell-grey"),
-            LayerParam::new("patches-left", "americanflag-red"),
+            LayerParam::new("patches-left", "flag-patch-red"),
         ];
         let normalizer = LayerNormalizer::new(View::Front, &params);
 
@@ -208,7 +208,7 @@ mod tests {
     #[test]
     fn test_normalize_patches_left_view() {
         let params = vec![
-            LayerParam::new("patches-left", "americanflag-red"),
+            LayerParam::new("patches-left", "flag-patch-red"),
             LayerParam::new("patches-right", "canadaflag-red"),
         ];
         let normalizer = LayerNormalizer::new(View::Left, &params);
@@ -225,7 +225,7 @@ mod tests {
     fn test_layer_ordering() {
         let params = vec![
             LayerParam::new("hats", "beanie-black"),
-            LayerParam::new("hoodies", "baerskin4-black"),
+            LayerParam::new("hoodies", "hoodie-black"),
             LayerParam::new("pants", "cargo-darkgreen"),
         ];
         let normalizer = LayerNormalizer::new(View::Front, &params);

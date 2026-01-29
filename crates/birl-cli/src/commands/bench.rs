@@ -138,7 +138,7 @@ pub async fn run_benchmarks(storage: Arc<StorageService>, output_file: Option<St
 
     // Test 1: Basic composition (single item)
     info!("Running: Basic composition (single hoodie)");
-    let times = bench_composition(&storage, View::Front, "hoodies/baerskin4-black", 10).await?;
+    let times = bench_composition(&storage, View::Front, "hoodies/hoodie-black", 10).await?;
     let result = BenchmarkResults::new("Basic (1 item)".to_string(), times);
     result.print();
     all_results.push(result);
@@ -148,7 +148,7 @@ pub async fn run_benchmarks(storage: Arc<StorageService>, output_file: Option<St
     let times = bench_composition(
         &storage,
         View::Front,
-        "hoodies/baerskin4-black,pants/cargo-darkgreen,hats/beanie-black",
+        "hoodies/hoodie-black,pants/cargo-darkgreen,hats/beanie-black",
         10,
     )
     .await?;
@@ -161,7 +161,7 @@ pub async fn run_benchmarks(storage: Arc<StorageService>, output_file: Option<St
     let times = bench_composition(
         &storage,
         View::Front,
-        "hoodies/baerskin4-black,pants/cargo-black,hats/beanie-black,gloves/baerskinleatherlinedgloves-black,jackets/softshell-grey",
+        "hoodies/hoodie-black,pants/cargo-black,hats/beanie-black,gloves/leather-gloves-black,jackets/softshell-grey",
         10,
     )
     .await?;
@@ -171,14 +171,14 @@ pub async fn run_benchmarks(storage: Arc<StorageService>, output_file: Option<St
 
     // Test 4: Different views
     info!("Running: Back view composition");
-    let times = bench_composition(&storage, View::Back, "hoodies/baerskin4-black,pants/cargo-darkgreen", 10).await?;
+    let times = bench_composition(&storage, View::Back, "hoodies/hoodie-black,pants/cargo-darkgreen", 10).await?;
     let result = BenchmarkResults::new("Back view (2 items)".to_string(), times);
     result.print();
     all_results.push(result);
 
     // Test 5: Cache performance
     info!("Running: Cache retrieval performance");
-    let times = bench_with_cache(&storage, View::Front, "hoodies/baerskin4-black", 100).await?;
+    let times = bench_with_cache(&storage, View::Front, "hoodies/hoodie-black", 100).await?;
     let result = BenchmarkResults::new("Cache hit".to_string(), times);
     result.print();
     all_results.push(result);

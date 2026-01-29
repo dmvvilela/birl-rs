@@ -59,7 +59,7 @@ cargo run --bin birl-cli -- compose --example with-patches -o patches.jpg
 ```bash
 # Front view with custom items
 cargo run --bin birl-cli -- compose \
-  --params "hoodies/baerskin4-black,pants/cargo-darkgreen,hats/beanie-black" \
+  --params "hoodies/hoodie-black,pants/cargo-darkgreen,hats/beanie-black" \
   -o custom.jpg
 
 # Back view
@@ -156,14 +156,14 @@ curl http://localhost:3000/health
 # Create composite (basic)
 curl -X POST http://localhost:3000/create \
   -H "Content-Type: application/json" \
-  -d '{"p": "hoodies/baerskin4-black"}' \
+  -d '{"p": "hoodies/hoodie-black"}' \
   --output result.jpg
 
 # Create composite (full outfit, back view)
 curl -X POST http://localhost:3000/create \
   -H "Content-Type: application/json" \
   -d '{
-    "p": "hoodies/baerskin4-black,pants/cargo-darkgreen,hats/beanie-black",
+    "p": "hoodies/hoodie-black,pants/cargo-darkgreen,hats/beanie-black",
     "view": "back"
   }' \
   --output back-view.jpg
@@ -172,7 +172,7 @@ curl -X POST http://localhost:3000/create \
 curl -X POST http://localhost:3000/create \
   -H "Content-Type: application/json" \
   -d '{
-    "p": "hoodies/baerskin4-black",
+    "p": "hoodies/hoodie-black",
     "bypassCache": true
   }' \
   --output fresh.jpg
@@ -242,16 +242,16 @@ Parameters follow this format: `category/sku,category/sku,...`
 ### Examples
 ```bash
 # Single item
-"hoodies/baerskin4-black"
+"hoodies/hoodie-black"
 
 # Multiple items
-"hoodies/baerskin4-black,pants/cargo-darkgreen"
+"hoodies/hoodie-black,pants/cargo-darkgreen"
 
 # With patches
-"hoodies/baerskin4-black,patches-left/americanflagpatch-red"
+"hoodies/hoodie-black,patches-left/flag-patch-red"
 
 # Full outfit
-"hoodies/baerskin4-black,pants/cargo-black,hats/beanie-black,gloves/baerskinleatherlinedgloves-black"
+"hoodies/hoodie-black,pants/cargo-black,hats/beanie-black,gloves/leather-gloves-black"
 ```
 
 ## ⚙️ Environment Variables
@@ -304,7 +304,7 @@ cargo build --workspace
 ### Testing a specific combination
 ```bash
 cargo run --bin birl-cli -- compose \
-  --params "hoodies/baerskin4-black,jackets/softshell-grey" \
+  --params "hoodies/hoodie-black,jackets/softshell-grey" \
   -o test.jpg
 ```
 
@@ -341,7 +341,7 @@ ab -n 100 -c 10 -p request.json -T application/json \
   http://localhost:3000/create
 
 # request.json contents:
-# {"p":"hoodies/baerskin4-black","view":"front"}
+# {"p":"hoodies/hoodie-black","view":"front"}
 ```
 
 ---

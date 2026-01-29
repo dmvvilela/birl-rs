@@ -21,7 +21,7 @@ mod integration_tests {
     #[test]
     fn test_full_workflow() {
         // Parse parameters
-        let params_str = "hoodies/baerskin4-black-xl,pants/cargo-darkgreen-40,hats/beanie-black";
+        let params_str = "hoodies/hoodie-black-xl,pants/cargo-darkgreen-40,hats/beanie-black";
         let params = parse_params(params_str);
         assert_eq!(params.len(), 3);
 
@@ -36,7 +36,7 @@ mod integration_tests {
         assert_eq!(normalized[2].category, "hats");
 
         // Generate cache key
-        let cache_key = generate_cache_key(&normalized, View::Front, "swatthermals-black");
+        let cache_key = generate_cache_key(&normalized, View::Front, "base-model-black");
         assert!(!cache_key.is_empty());
         assert!(cache_key.chars().all(|c| c.is_ascii_hexdigit()));
     }
@@ -56,7 +56,7 @@ mod integration_tests {
 
     #[test]
     fn test_patches_with_softshell() {
-        let params_str = "jackets/softshell-grey,patches-left/americanflag-red";
+        let params_str = "jackets/softshell-grey,patches-left/flag-patch-red";
         let params = parse_params(params_str);
 
         let normalizer = LayerNormalizer::new(View::Front, &params);
@@ -70,7 +70,7 @@ mod integration_tests {
 
     #[test]
     fn test_back_view_filters_patches() {
-        let params_str = "hoodies/baerskin4-black,patches-left/americanflag-red";
+        let params_str = "hoodies/hoodie-black,patches-left/flag-patch-red";
         let params = parse_params(params_str);
 
         let normalizer = LayerNormalizer::new(View::Back, &params);
@@ -84,7 +84,7 @@ mod integration_tests {
     #[test]
     fn test_left_view_filters_categories() {
         let params_str =
-            "pants/cargo-black,hoodies/baerskin4-black,jackets/softshell-grey,hats/beanie-black";
+            "pants/cargo-black,hoodies/hoodie-black,jackets/softshell-grey,hats/beanie-black";
         let params = parse_params(params_str);
 
         let normalizer = LayerNormalizer::new(View::Left, &params);

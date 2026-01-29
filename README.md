@@ -127,7 +127,7 @@ cargo run --bin birl-cli -- compose --example basic -o result.jpg
 
 # Custom composition
 cargo run --bin birl-cli -- compose \
-  --params "hoodies/baerskin4-black,pants/cargo-darkgreen" \
+  --params "hoodies/hoodie-black,pants/cargo-darkgreen" \
   -o outfit.jpg
 
 # Different views (note: use --view, not -v which is for verbose)
@@ -177,7 +177,7 @@ cargo run --release --bin birl-server
 curl -X POST http://localhost:3000/create \
   -H "Content-Type: application/json" \
   -d '{
-    "p": "hoodies/baerskin4-black,pants/cargo-darkgreen",
+    "p": "hoodies/hoodie-black,pants/cargo-darkgreen",
     "view": "front"
   }' \
   --output result.jpg
@@ -231,8 +231,8 @@ Layers are composited in this exact order (bottom to top):
 
 Size variations are automatically removed:
 - `mensdenimjeans-blue-36` -> `mensdenimjeans-blue`
-- `baerskinzip-grey-s` -> `baerskinzip-grey`
-- `baerskin4-black-xl` -> `baerskin4-black`
+- `zip-hoodie-grey-s` -> `zip-hoodie-grey`
+- `hoodie-black-xl` -> `hoodie-black`
 
 ### Special Categories
 

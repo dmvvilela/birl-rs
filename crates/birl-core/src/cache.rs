@@ -33,10 +33,10 @@ mod tests {
     #[test]
     fn test_generate_cache_key() {
         let params = vec![
-            LayerParam::new("hoodies", Sku::new("baerskin4-black")),
+            LayerParam::new("hoodies", Sku::new("hoodie-black")),
             LayerParam::new("pants", Sku::new("cargo-darkgreen")),
         ];
-        let key = generate_cache_key(&params, View::Front, "swatthermals-black");
+        let key = generate_cache_key(&params, View::Front, "base-model-black");
 
         // Should produce a valid hex string
         assert!(!key.is_empty());
@@ -46,16 +46,16 @@ mod tests {
     #[test]
     fn test_cache_key_consistency() {
         let params1 = vec![
-            LayerParam::new("hoodies", Sku::new("baerskin4-black")),
+            LayerParam::new("hoodies", Sku::new("hoodie-black")),
             LayerParam::new("pants", Sku::new("cargo-darkgreen")),
         ];
         let params2 = vec![
             LayerParam::new("pants", Sku::new("cargo-darkgreen")),
-            LayerParam::new("hoodies", Sku::new("baerskin4-black")),
+            LayerParam::new("hoodies", Sku::new("hoodie-black")),
         ];
 
-        let key1 = generate_cache_key(&params1, View::Front, "swatthermals-black");
-        let key2 = generate_cache_key(&params2, View::Front, "swatthermals-black");
+        let key1 = generate_cache_key(&params1, View::Front, "base-model-black");
+        let key2 = generate_cache_key(&params2, View::Front, "base-model-black");
 
         // Should produce the same key regardless of order
         assert_eq!(key1, key2);
@@ -63,10 +63,10 @@ mod tests {
 
     #[test]
     fn test_cache_key_differs_by_view() {
-        let params = vec![LayerParam::new("hoodies", Sku::new("baerskin4-black"))];
+        let params = vec![LayerParam::new("hoodies", Sku::new("hoodie-black"))];
 
-        let key_front = generate_cache_key(&params, View::Front, "swatthermals-black");
-        let key_back = generate_cache_key(&params, View::Back, "swatthermals-black");
+        let key_front = generate_cache_key(&params, View::Front, "base-model-black");
+        let key_back = generate_cache_key(&params, View::Back, "base-model-black");
 
         // Should produce different keys for different views
         assert_ne!(key_front, key_back);
@@ -74,9 +74,9 @@ mod tests {
 
     #[test]
     fn test_cache_key_differs_by_plate() {
-        let params = vec![LayerParam::new("hoodies", Sku::new("baerskin4-black"))];
+        let params = vec![LayerParam::new("hoodies", Sku::new("hoodie-black"))];
 
-        let key1 = generate_cache_key(&params, View::Front, "swatthermals-black");
+        let key1 = generate_cache_key(&params, View::Front, "base-model-black");
         let key2 = generate_cache_key(&params, View::Front, "patch-plate");
 
         // Should produce different keys for different plates

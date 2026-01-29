@@ -9,32 +9,32 @@ pub const EXAMPLES: &[Example] = &[
     Example {
         name: "basic",
         description: "Single black hoodie on front view",
-        params: "hoodies/baerskin4-black",
+        params: "hoodies/hoodie-black",
     },
     Example {
         name: "full-outfit",
         description: "Complete outfit: hoodie, pants, and beanie",
-        params: "hoodies/baerskin4-black,pants/cargo-darkgreen,hats/beanie-black",
+        params: "hoodies/hoodie-black,pants/cargo-darkgreen,hats/beanie-black",
     },
     Example {
         name: "with-patches",
         description: "Hoodie with American flag patch on left",
-        params: "hoodies/baerskin4-black,patches-left/americanflagpatch-red",
+        params: "hoodies/hoodie-black,patches-left/flag-patch-red",
     },
     Example {
         name: "jacket-outfit",
         description: "Jacket over hoodie with pants",
-        params: "hoodies/baerskin4-black,jackets/softshell-grey,pants/cargo-black",
+        params: "hoodies/hoodie-black,jackets/softshell-grey,pants/cargo-black",
     },
     Example {
         name: "gloves-hat",
         description: "Full winter outfit with gloves and hat",
-        params: "hoodies/baerskin4-black,pants/cargo-black,hats/beanie-black,gloves/baerskinleatherlinedgloves-black",
+        params: "hoodies/hoodie-black,pants/cargo-black,hats/beanie-black,gloves/leather-gloves-black",
     },
     Example {
         name: "outer-jacket",
         description: "Greenland outer jacket over hoodie",
-        params: "hoodies/baerskin4-black,jackets/greenland-black,pants/cargo-darkgreen",
+        params: "hoodies/hoodie-black,jackets/greenland-black,pants/cargo-darkgreen",
     },
 ];
 

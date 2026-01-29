@@ -40,7 +40,7 @@ impl View {
         match self {
             View::Left | View::Right => "patch-plate",
             View::Side => "side-special-plate",
-            View::Front | View::Back => "swatthermals-black",
+            View::Front | View::Back => "base-model-black",
         }
     }
 
@@ -135,8 +135,8 @@ impl Sku {
     /// Create a new normalized SKU by removing size suffixes
     /// Examples:
     ///   mensdenimjeans-blue-36 -> mensdenimjeans-blue
-    ///   baerskinzip-grey-s -> baerskinzip-grey
-    ///   baerskin4-black-lxl -> baerskin4-black
+    ///   zip-hoodie-grey-s -> zip-hoodie-grey
+    ///   hoodie-black-lxl -> hoodie-black
     pub fn new(raw: &str) -> Self {
         // Convert to lowercase first
         let mut result = raw.trim().to_lowercase();
@@ -229,17 +229,17 @@ mod tests {
     #[test]
     fn test_sku_normalization() {
         assert_eq!(Sku::new("mensdenimjeans-blue-36").as_str(), "mensdenimjeans-blue");
-        assert_eq!(Sku::new("baerskinzip-grey-s").as_str(), "baerskinzip-grey");
-        assert_eq!(Sku::new("baerskin4-black-lxl").as_str(), "baerskin4-black");
-        assert_eq!(Sku::new("baerskin4-black-xl").as_str(), "baerskin4-black");
-        assert_eq!(Sku::new("baerskin4-black-2xl").as_str(), "baerskin4-black");
+        assert_eq!(Sku::new("zip-hoodie-grey-s").as_str(), "zip-hoodie-grey");
+        assert_eq!(Sku::new("hoodie-black-lxl").as_str(), "hoodie-black");
+        assert_eq!(Sku::new("hoodie-black-xl").as_str(), "hoodie-black");
+        assert_eq!(Sku::new("hoodie-black-2xl").as_str(), "hoodie-black");
         assert_eq!(Sku::new("cargo-darkgreen-40").as_str(), "cargo-darkgreen");
     }
 
     #[test]
     fn test_view_plate_value() {
-        assert_eq!(View::Front.plate_value(), "swatthermals-black");
-        assert_eq!(View::Back.plate_value(), "swatthermals-black");
+        assert_eq!(View::Front.plate_value(), "base-model-black");
+        assert_eq!(View::Back.plate_value(), "base-model-black");
         assert_eq!(View::Side.plate_value(), "side-special-plate");
         assert_eq!(View::Left.plate_value(), "patch-plate");
         assert_eq!(View::Right.plate_value(), "patch-plate");
@@ -256,9 +256,9 @@ mod tests {
 
     #[test]
     fn test_layer_param_parse() {
-        let param = LayerParam::parse("hoodies/baerskin4-black").unwrap();
+        let param = LayerParam::parse("hoodies/hoodie-black").unwrap();
         assert_eq!(param.category, "hoodies");
-        assert_eq!(param.sku.as_str(), "baerskin4-black");
+        assert_eq!(param.sku.as_str(), "hoodie-black");
     }
 
     #[test]

@@ -328,7 +328,7 @@ cargo run --bin birl-cli -- compose --example basic -o result.jpg
 # Custom composition
 cargo run --bin birl-cli -- compose \
   --view front \
-  --params "hoodies/baerskin4-black,pants/cargo-darkgreen" \
+  --params "hoodies/hoodie-black,pants/cargo-darkgreen" \
   -o custom.jpg
 ```
 
@@ -340,7 +340,7 @@ cargo run --bin birl-server
 # Create composite
 curl -X POST http://localhost:3000/create \
   -H "Content-Type: application/json" \
-  -d '{"p": "hoodies/baerskin4-black", "view": "front"}' \
+  -d '{"p": "hoodies/hoodie-black", "view": "front"}' \
   --output result.jpg
 ```
 
